@@ -18,7 +18,7 @@ int main()
 
 
     //step1 : find target
-    HWND hwnd = FindWindow(0,"gemsofwar");
+    HWND hwnd = FindWindow(0, "gemsofwar");
     HDC hdc_window=GetWindowDC(hwnd);
     //HDC hdc_window=GetWindowDC(NULL);
 
