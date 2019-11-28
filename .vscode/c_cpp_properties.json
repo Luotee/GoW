@@ -3,7 +3,10 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceRoot}"
+                "${workspaceFolder}/**",
+                "C:\\opencv\\build\\include",
+                "C:\\opencv\\build\\include\\opencv2",
+                "C:\\opencv\\build\\include\\opencv"                
             ],
             "defines": [
                 "_DEBUG",
@@ -14,12 +17,14 @@
             "intelliSenseMode": "clang-x64",
             "browse": {
                 "path": [
-                    "${workspaceRoot}"
+                    "${workspaceRoot}",
+                    "C:\\opencv\\build\\x64\\MinGW\\bin",
+                    "C:\\Program Files\\mingw-w64\\mingw64\\x86_64-w64-mingw32\\include"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""
             },
-            "compilerPath": "C:/Program Files/mingw-w64/mingw64/bin/g++.exe",
+            "compilerPath": "C:\\Program Files\\mingw-w64\\mingw64\\bin\\g++.exe",
             "cStandard": "c11",
             "cppStandard": "c++17"
         }

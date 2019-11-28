@@ -1,0 +1,38 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-g",
+                "${file}",
+                "-o", 
+                "${fileBasenameNoExtension}.exe",                
+                "-I","C:\\opencv\\build\\include",
+                "-I", "C:\\opencv\\build\\include\\opencv2",
+                "-L","C:\\opencv\\build\\x64\\MinGW\\bin",                
+                "-l", "libopencv_calib3d412",
+                "-l", "libopencv_core412",
+                "-l", "libopencv_dnn412",
+                "-l", "libopencv_features2d412",
+                "-l", "libopencv_flann412",
+                "-l", "libopencv_gapi412",
+                "-l", "libopencv_highgui412",
+                "-l", "libopencv_imgcodecs412",
+                "-l", "libopencv_imgproc412",
+                "-l", "libopencv_ml412",
+                "-l", "libopencv_objdetect412",
+                "-l", "libopencv_photo412",
+                "-l", "libopencv_stitching412",
+                "-l", "libopencv_video412",
+                "-l", "libopencv_videoio412"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
