@@ -13,7 +13,7 @@ $(PROG):$(SRCS)
 	$(CC) -o $(PROG) $(SRCS) $(CFLAGS) -I $(OPENCV_include_path) -L $(OPENCV_dll_path) $(OPENCV_dll)
 
 capture_test:
-	g++ -o test hp.cpp -mwindows
+	g++ -o hp hp.cpp -mwindows
 
 clean:
-	del test.exe
+	del *.exe
