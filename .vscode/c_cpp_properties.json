@@ -3,7 +3,7 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**",
+                "${workspaceFolder}\\**",
                 "C:\\opencv\\build\\include",
                 "C:\\opencv\\build\\include\\opencv2",
                 "C:\\opencv\\build\\include\\opencv"                

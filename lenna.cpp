@@ -7,9 +7,9 @@ using namespace cv;
 using namespace std;
 
 #define RESIZE_SCALING 2.4
-#define GRID_SIZE 113
-#define CHESSBOARD_X 553
-#define CHESSBOARD_Y 121
+#define GRID_SIZE 108.3/RESIZE_SCALING
+#define CHESSBOARD_X 535/RESIZE_SCALING
+#define CHESSBOARD_Y 117/RESIZE_SCALING
 
 
 void showimg(string windowname, const Mat &img, int x, int y);
@@ -18,35 +18,66 @@ int main()
 {
     //讀取圖片
     Mat img = imread(".\\hp.bmp");
+    imwrite(".\\hp_png.png", img);
+    img = imread(".\\hp_png.png");
     //因windows scaling，將圖片縮小
     resize(img, img, Size(img.cols/RESIZE_SCALING, img.rows/RESIZE_SCALING));
-    namedWindow("image");
+    namedWindow("image", WINDOW_NORMAL);
+    resizeWindow("image", img.cols, img.rows);
 	moveWindow("image", 0, 0);
     imshow("image", img);
 
-    //灰階
-    Mat gray;
-    cvtColor(img, gray, COLOR_BGR2GRAY);
-    showimg("1_gray", gray, 0, 0);
-
-    //平滑
-	Mat Gaussianblur;
-	GaussianBlur(gray, Gaussianblur, Size(5,5), 0, 0);
-	showimg("2_Gaussianblur", Gaussianblur, 480, 0);
-
-    //邊緣
-	Mat canny;
-	Canny(gray, canny, 75, 200);
-	showimg("3_canny", canny, 0, 270);
-
-    //test
-    Mat test_img(400, 400, CV_8UC3, Scalar(255,255,255));
-    line(test_img, Point(20,40), Point(120,140), Scalar(255,0,0), 3);
-    rectangle(test_img, Point(150,40), Point(250,140), Scalar(0,0,255), -1);
-    circle(test_img, Point(330,90), 50, Scalar(0,255,0), -1);
-    ellipse(test_img, Point(80,280), Size(60,40), 45, 0, 360, Scalar(255,255,0), 2);
-
-    showimg("4_test", test_img, 480, 270);
+    //標示棋盤
+    line(//top line
+        img, 
+        Point2f(CHESSBOARD_X, CHESSBOARD_Y),
+        Point2f((CHESSBOARD_X+8*GRID_SIZE), CHESSBOARD_Y), 
+        Scalar(0,255,0), 1
+    );
+    line(//left line
+        img, 
+        Point2f(CHESSBOARD_X, CHESSBOARD_Y), 
+        Point2f(CHESSBOARD_X, (CHESSBOARD_Y+8*GRID_SIZE)), 
+        Scalar(0,255,0), 1
+    );
+    line(//bottom line
+        img, 
+        Point2f(CHESSBOARD_X, (CHESSBOARD_Y+8*GRID_SIZE)), 
+        Point2f((CHESSBOARD_X+8*GRID_SIZE), (CHESSBOARD_Y+8*GRID_SIZE)), 
+        Scalar(0,255,0), 1
+    );
+    line(//right line
+        img, 
+        Point2f((CHESSBOARD_X+8*GRID_SIZE), CHESSBOARD_Y), 
+        Point2f((CHESSBOARD_X+8*GRID_SIZE), (CHESSBOARD_Y+8*GRID_SIZE)), 
+        Scalar(0,255,0), 1
+    );
+    int i, j;
+    float x, y;
+    /*for(i=0;i<9;i++)
+    {
+        for(j=0;j<9;j++)
+        {
+            circle(img, Point2f(CHESSBOARD_X+j*GRID_SIZE, CHESSBOARD_Y+i*GRID_SIZE), 3, Scalar(0,0,255), 2);
+        }
+    }*/
+    for(i=0;i<8;i++)
+    {
+        for(j=0;j<8;j++)
+        {
+            x=GRID_SIZE/2+CHESSBOARD_X+j*GRID_SIZE;
+            y=GRID_SIZE/2+CHESSBOARD_Y+i*GRID_SIZE;
+            circle(img, Point2f(x, y), 3, Scalar(0,0,255), 2);
+            printf("%d : %u\n",i*8+j+1,img.at<Vec3b>(Point(x,y))[0]);
+        }
+    }
+    //circle(img, Point2f(CHESSBOARD_X+GRID_SIZE/3, CHESSBOARD_Y+GRID_SIZE/1.5), 3, Scalar(0,0,0), 2);
+    //putText(img, "X", Point2f(CHESSBOARD_X+GRID_SIZE/3, CHESSBOARD_Y+GRID_SIZE/1.5), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 1, LINE_AA);
+    namedWindow("test", WINDOW_NORMAL);
+    resizeWindow("test", img.cols, img.rows);
+    imshow("test", img);
+    
+    //showimg("test2",img,0,0);
 
     waitKey();
     return 0;
