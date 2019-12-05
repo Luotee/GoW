@@ -1,26 +1,17 @@
-#include <opencv2/opencv.hpp>
-#include <opencv2/highgui.hpp>
-#include <iostream>
-#include <opencv2/imgproc/imgproc.hpp>
-
-using namespace cv;
-using namespace std;
+#include "img_to_2D_array.h"
 
 #define RESIZE_SCALING 2.4
 #define GRID_SIZE 108.3/RESIZE_SCALING
 #define CHESSBOARD_X 535/RESIZE_SCALING
 #define CHESSBOARD_Y 117/RESIZE_SCALING
 
-
+/*
+void img2array();
 void showimg(string windowname, const Mat &img, int x, int y);
 uint_fast8_t knn(uint_fast8_t b, uint_fast8_t g, uint_fast8_t r);
-bool sort_by_contour_area(vector<Point> x, vector<Point> y) 
-{
-	double i = fabs(contourArea(Mat(x)));
-	double j = fabs(contourArea(Mat(y)));
-	return (i > j);
-}
-int main()
+*/
+
+void OpencvHp::img2array()
 {
     //讀取圖片
     Mat img = imread(".\\screen.bmp");
@@ -104,10 +95,9 @@ int main()
     imshow("mark", img);
     
     waitKey();
-    return 0;
 }
 
-void showimg(string windowname, const Mat &img, int x, int y)
+void OpencvHp::showimg(string windowname, const Mat &img, int x, int y)
 {
 	namedWindow(windowname, WINDOW_NORMAL);
 	imshow(windowname, img);
@@ -115,7 +105,7 @@ void showimg(string windowname, const Mat &img, int x, int y)
 	moveWindow(windowname, x, y);
 }
 
-uint_fast8_t knn(uint_fast8_t b, uint_fast8_t g, uint_fast8_t r)
+uint_fast8_t OpencvHp::knn(uint_fast8_t b, uint_fast8_t g, uint_fast8_t r)
 {
     uint_fast8_t b_arr[8]={187,235,55,52,130,160,66,160};
     uint_fast8_t g_arr[8]={195,207,183,50,223,14,69,176};
