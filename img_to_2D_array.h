@@ -12,7 +12,7 @@ using namespace std;
 class OpencvHp {
 
     public:
-        void img2array();
+        void img2array(uint_fast8_t chessboard[8][8]);
 
     private:
         void showimg(string windowname, const Mat &img, int x, int y);

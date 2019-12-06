@@ -11,7 +11,7 @@ void showimg(string windowname, const Mat &img, int x, int y);
 uint_fast8_t knn(uint_fast8_t b, uint_fast8_t g, uint_fast8_t r);
 */
 
-void OpencvHp::img2array()
+void OpencvHp::img2array(uint_fast8_t chessboard[8][8])
 {
     //讀取圖片
     Mat img = imread(".\\screen.bmp");
@@ -51,7 +51,7 @@ void OpencvHp::img2array()
     int i, j;
     float x, y;
     char *text;
-    uint_fast8_t chessboard[8][8];
+    
     uint_fast8_t g, b, r;
     for(i=0;i<8;i++)
     {

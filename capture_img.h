@@ -2,7 +2,6 @@
 #define CAPTURE_IMG_H
 
 #include <windows.h>
-#include <windows.h>
 #include <cstdio>
 #include <string>
 
