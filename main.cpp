@@ -2,7 +2,7 @@
 #include <cstdio>
 #include "capture_img.h"
 #include "img_to_2D_array.h"
-#include "search_algorithm.h"
+//#include "search_algorithm.h"
 
 using namespace std;
 
@@ -21,7 +21,7 @@ int main()
     delete convert_img_to_array;
 
     //DFS or BFS algorithm
-    Search *best_path = new Search();
+    //Search *best_path = new Search();
     
 
 

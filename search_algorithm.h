@@ -33,4 +33,4 @@ class Search {
 
 
 
-#endif SEARCH_ALGORITHM_H
+#endif /* SEARCH_ALGORITHM_H */
