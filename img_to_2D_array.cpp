@@ -1,10 +1,5 @@
 #include "img_to_2D_array.h"
 
-#define RESIZE_SCALING 2.4
-#define GRID_SIZE 108.3/RESIZE_SCALING
-#define CHESSBOARD_X 535/RESIZE_SCALING
-#define CHESSBOARD_Y 117/RESIZE_SCALING
-
 /*
 void img2array();
 void showimg(string windowname, const Mat &img, int x, int y);
@@ -15,6 +10,12 @@ void OpencvHp::img2array(uint_fast8_t chessboard[8][8])
 {
     //讀取圖片
     Mat img = imread(".\\screen.bmp");
+
+    if ( img.empty() ) 
+    { 
+        cout << "Error loading the image" << endl;
+        exit(0);
+    }
 
     //因windows scaling，將圖片縮小
     resize(img, img, Size(img.cols/RESIZE_SCALING, img.rows/RESIZE_SCALING));
@@ -81,6 +82,34 @@ void OpencvHp::img2array(uint_fast8_t chessboard[8][8])
             }
         }
     }
+
+    //putText(img, "X", Point2f(CHESSBOARD_X+GRID_SIZE/3, CHESSBOARD_Y+GRID_SIZE/1.5), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 1, LINE_AA);
+    namedWindow("mark", WINDOW_NORMAL);
+    resizeWindow("mark", img.cols, img.rows);
+    imshow("mark", img);
+
+    Point3_<int> mouseInputs;
+    setMouseCallback("mark", CallBackFunc, &mouseInputs);
+
+    //waitKey();
+    bool keyup=true;
+    while(1)
+    {
+        int k = waitKey(1);
+        if(k==27) break;//if press ESC then break the loop
+        if(mouseInputs.z==EVENT_LBUTTONDOWN && keyup)
+        {
+            keyup = false;
+            uint_fast8_t board_x, board_y;
+            board_x = (mouseInputs.x-CHESSBOARD_X) / GRID_SIZE;
+            board_y = (mouseInputs.y-CHESSBOARD_Y) / GRID_SIZE;
+            printf("clickon: %u %u\n",board_x,board_y);
+        }
+        else if(mouseInputs.z==EVENT_LBUTTONUP) keyup = true;
+        else if(mouseInputs.z==EVENT_MOUSEWHEEL) break;
+    }
+
+    //print the "final" chessboard
     for(i=0;i<8;i++)
     {
         for(j=0;j<8;j++)
@@ -89,12 +118,6 @@ void OpencvHp::img2array(uint_fast8_t chessboard[8][8])
         }
         putchar(10);
     }
-    //putText(img, "X", Point2f(CHESSBOARD_X+GRID_SIZE/3, CHESSBOARD_Y+GRID_SIZE/1.5), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 1, LINE_AA);
-    namedWindow("mark", WINDOW_NORMAL);
-    resizeWindow("mark", img.cols, img.rows);
-    imshow("mark", img);
-    
-    waitKey();
 }
 
 void OpencvHp::showimg(string windowname, const Mat &img, int x, int y)
@@ -107,9 +130,10 @@ void OpencvHp::showimg(string windowname, const Mat &img, int x, int y)
 
 uint_fast8_t OpencvHp::knn(uint_fast8_t b, uint_fast8_t g, uint_fast8_t r)
 {
-    uint_fast8_t b_arr[8]={187,235,55,52,130,160,66,160};
-    uint_fast8_t g_arr[8]={195,207,183,50,223,14,69,176};
-    uint_fast8_t r_arr[8]={202,74,78,217,251,78,107,225};
+    //                       頭   藍   綠    紅   黃   紫   棕  爆頭 
+    uint_fast8_t b_arr[8]={ 187, 235,  55,  52, 130, 160,  66, 160};
+    uint_fast8_t g_arr[8]={ 195, 207, 183,  50, 223,  14,  69, 176};
+    uint_fast8_t r_arr[8]={ 202,  74,  78, 217, 251,  78, 107, 225};
     int i;
     uint_fast8_t min_target;
     double min_distance = 1000.0;
@@ -126,6 +150,7 @@ uint_fast8_t OpencvHp::knn(uint_fast8_t b, uint_fast8_t g, uint_fast8_t r)
             ),
             x
         );
+        
         if(distance < min_distance)
         {
             min_distance = distance;
@@ -133,4 +158,32 @@ uint_fast8_t OpencvHp::knn(uint_fast8_t b, uint_fast8_t g, uint_fast8_t r)
         }
     }
     return min_target;
+}
+
+void OpencvHp::CallBackFunc(int event, int x, int y, int flags, void* userdata)
+{
+    Point3_<int> *mouseInputs = (Point3_<int>*)userdata;
+    mouseInputs->x= x;
+    mouseInputs->y = y;
+    mouseInputs->z = event;
+
+    /*
+     if  ( event == EVENT_LBUTTONDOWN )
+     {
+          cout << "Left button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
+     }
+     else if  ( event == EVENT_RBUTTONDOWN )
+     {
+          waitKey(0);
+     }
+     else if  ( event == EVENT_MBUTTONDOWN )
+     {
+          cout << "Middle button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
+     }
+     else if ( event == EVENT_MOUSEMOVE )
+     {
+          cout << "Mouse move over the window - position (" << x << ", " << y << ")" << endl;
+
+     }
+     */
 }

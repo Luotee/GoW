@@ -4,6 +4,9 @@
 #include <windows.h>
 #include <cstdio>
 #include <string>
+#include <iostream>
+
+using namespace std;
 
 class CaptureImg {
 

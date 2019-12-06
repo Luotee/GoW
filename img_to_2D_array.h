@@ -9,6 +9,13 @@
 using namespace cv;
 using namespace std;
 
+#define RESIZE_SCALING 2.4
+#define GRID_SIZE (108.3/RESIZE_SCALING)
+#define CHESSBOARD_X (535/RESIZE_SCALING)
+#define CHESSBOARD_Y (117/RESIZE_SCALING)
+
+//int mouseInputs;
+
 class OpencvHp {
 
     public:
@@ -17,6 +24,8 @@ class OpencvHp {
     private:
         void showimg(string windowname, const Mat &img, int x, int y);
         uint_fast8_t knn(uint_fast8_t b, uint_fast8_t g, uint_fast8_t r);
+        static void CallBackFunc(int event, int x, int y, int flags, void* userdata);//must be static
+
 
 };
 

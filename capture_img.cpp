@@ -1,5 +1,4 @@
 #include "capture_img.h"
-using namespace std;
 
 //===========User Setting===========//
 #define path ".\\screen.bmp"        //
@@ -16,8 +15,13 @@ bool SaveBMP(HBITMAP hBitmap);
 void CaptureImg::capture()
 {
 
-    //step1 : find target
+    //step1 : find target, if no target then end the program
     HWND hwnd = FindWindow(0, target_window);
+    if(hwnd==0)
+    {
+      printf("ERROR: please open the game first!\n");
+      exit(0);
+    }
     HDC hdc_window=GetWindowDC(hwnd);
     //HDC hdc_window=GetWindowDC(NULL);
 
@@ -32,6 +36,7 @@ void CaptureImg::capture()
     //step4 : Restore the Window
     RECT m_rCapturedWindow;
     ShowWindow(hwnd,3);
+    Sleep(100);
     //SetWindowPos(hwnd, hwnd, 0, 0, 1920, 1080, SWP_NOZORDER | SWP_NOACTIVATE);
     GetWindowRect(hwnd,&m_rCapturedWindow);
 
