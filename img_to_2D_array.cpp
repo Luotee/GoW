@@ -60,7 +60,6 @@ void OpencvHp::img2array(uint_fast8_t chessboard[8][8])
         {
             x=GRID_SIZE/2+CHESSBOARD_X+j*GRID_SIZE;
             y=GRID_SIZE/2+CHESSBOARD_Y+i*GRID_SIZE;
-            //circle(img, Point2f(x, y), 3, Scalar(0,0,255), 2);
             
             b = img.at<Vec3b>(Point(x,y))[0];
             g = img.at<Vec3b>(Point(x,y))[1];
@@ -71,19 +70,28 @@ void OpencvHp::img2array(uint_fast8_t chessboard[8][8])
             switch(chessboard[j][i])
             {
                 case '0' : rectangle(img, Point2f(x-GRID_SIZE/3, y-GRID_SIZE/3), Point(x+GRID_SIZE/3,y+GRID_SIZE/3), Scalar(255,255,255), 3); break;
-                case '1' : circle(img, Point2f(x, y), 10, Scalar(255,0,0), 5); break;
-                case '2' : circle(img, Point2f(x, y), 10, Scalar(0,255,0), 5); break;
-                case '3' : circle(img, Point2f(x, y), 10, Scalar(0,0,255), 5); break;
-                case '4' : circle(img, Point2f(x, y), 10, Scalar(0,255,255), 5); break;
-                case '5' : circle(img, Point2f(x, y), 10, Scalar(255,0,255), 5); break;
-                case '6' : circle(img, Point2f(x, y), 10, Scalar(21,0,136), 5); break;
+                case '1' : circle(img, Point2f(x, y), circle_radius, Scalar(239,207,74), circle_thickness); break; //blue
+                case '2' : circle(img, Point2f(x, y), circle_radius, Scalar(71,192,115), circle_thickness); break; //Green
+                case '3' : circle(img, Point2f(x, y), circle_radius, Scalar(57,77,239), circle_thickness); break; //red
+                case '4' : circle(img, Point2f(x, y), circle_radius, Scalar(123,227,255), circle_thickness); break; //yellow
+                case '5' : circle(img, Point2f(x, y), circle_radius, Scalar(214,35,165), circle_thickness); break; //purple
+                case '6' : circle(img, Point2f(x, y), circle_radius, Scalar(30,17,35), circle_thickness); break; //brown
                 case '7' : rectangle(img, Point2f(x-GRID_SIZE/3, y-GRID_SIZE/3), Point(x+GRID_SIZE/3,y+GRID_SIZE/3), Scalar(150,150,255), 3); break;
                 default : putText(img, "?", Point2f(x, y), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 1, LINE_AA);
             }
         }
     }
 
-    //putText(img, "X", Point2f(CHESSBOARD_X+GRID_SIZE/3, CHESSBOARD_Y+GRID_SIZE/1.5), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 1, LINE_AA);
+    //print the "initial" chessboard
+    for(i=0;i<8;i++)
+    {
+        for(j=0;j<8;j++)
+        {
+            printf("%c ",chessboard[j][i]);
+        }
+        putchar(10);
+    }
+
     namedWindow("mark", WINDOW_NORMAL);
     resizeWindow("mark", img.cols, img.rows);
     imshow("mark", img);
@@ -93,31 +101,31 @@ void OpencvHp::img2array(uint_fast8_t chessboard[8][8])
 
     //waitKey();
     bool keyup=true;
+    bool keyup2=true;
     while(1)
     {
+        //if press ESC then break the loop
         int k = waitKey(1);
-        if(k==27) break;//if press ESC then break the loop
+        if(k==27) break;
+
         if(mouseInputs.z==EVENT_LBUTTONDOWN && keyup)
         {
             keyup = false;
-            uint_fast8_t board_x, board_y;
-            board_x = (mouseInputs.x-CHESSBOARD_X) / GRID_SIZE;
-            board_y = (mouseInputs.y-CHESSBOARD_Y) / GRID_SIZE;
-            printf("clickon: %u %u\n",board_x,board_y);
+            user_modify_board(mouseInputs.x, mouseInputs.y, chessboard, img);
         }
-        else if(mouseInputs.z==EVENT_LBUTTONUP) keyup = true;
-        else if(mouseInputs.z==EVENT_MOUSEWHEEL) break;
+        else if(mouseInputs.z!=EVENT_LBUTTONDOWN) keyup = true;
+
+        if(mouseInputs.z==EVENT_LBUTTONDBLCLK && keyup2)
+        {
+            keyup2 = false;
+            user_modify_board(mouseInputs.x, mouseInputs.y, chessboard, img);
+        }
+        else if(mouseInputs.z!=EVENT_LBUTTONDBLCLK) keyup2 = true;
+        
+        if(mouseInputs.z==EVENT_MOUSEWHEEL) break;
     }
 
-    //print the "final" chessboard
-    for(i=0;i<8;i++)
-    {
-        for(j=0;j<8;j++)
-        {
-            printf("%c ",chessboard[j][i]);
-        }
-        putchar(10);
-    }
+
 }
 
 void OpencvHp::showimg(string windowname, const Mat &img, int x, int y)
@@ -166,24 +174,30 @@ void OpencvHp::CallBackFunc(int event, int x, int y, int flags, void* userdata)
     mouseInputs->x= x;
     mouseInputs->y = y;
     mouseInputs->z = event;
+    //printf("test event: %d\n",event);
+}
 
-    /*
-     if  ( event == EVENT_LBUTTONDOWN )
-     {
-          cout << "Left button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
-     }
-     else if  ( event == EVENT_RBUTTONDOWN )
-     {
-          waitKey(0);
-     }
-     else if  ( event == EVENT_MBUTTONDOWN )
-     {
-          cout << "Middle button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
-     }
-     else if ( event == EVENT_MOUSEMOVE )
-     {
-          cout << "Mouse move over the window - position (" << x << ", " << y << ")" << endl;
-
-     }
-     */
+void OpencvHp::user_modify_board(int mouse_x, int mouse_y, uint_fast8_t chessboard[8][8], const Mat &img)
+{
+    uint_fast8_t board_x, board_y;
+    board_x = (mouse_x-CHESSBOARD_X) / GRID_SIZE;
+    board_y = (mouse_y-CHESSBOARD_Y) / GRID_SIZE;
+    //printf("clickon: %u %u\n",board_x,board_y); //for debug
+    if(chessboard[board_x][board_y]=='7') chessboard[board_x][board_y]='0';
+    else chessboard[board_x][board_y]=chessboard[board_x][board_y]+1;
+    float re_x=GRID_SIZE/2+CHESSBOARD_X+board_x*GRID_SIZE;
+    float re_y=GRID_SIZE/2+CHESSBOARD_Y+board_y*GRID_SIZE;
+    switch(chessboard[board_x][board_y])
+    {
+        case '0' : rectangle(img, Point2f(re_x-GRID_SIZE/3, re_y-GRID_SIZE/3), Point(re_x+GRID_SIZE/3,re_y+GRID_SIZE/3), Scalar(255,255,255), 3); break;
+        case '1' : circle(img, Point2f(re_x, re_y), circle_radius, Scalar(239,207,74), circle_thickness); break; //blue
+        case '2' : circle(img, Point2f(re_x, re_y), circle_radius, Scalar(71,192,115), circle_thickness); break; //Green
+        case '3' : circle(img, Point2f(re_x, re_y), circle_radius, Scalar(57,77,239), circle_thickness); break; //red
+        case '4' : circle(img, Point2f(re_x, re_y), circle_radius, Scalar(123,227,255), circle_thickness); break; //yellow
+        case '5' : circle(img, Point2f(re_x, re_y), circle_radius, Scalar(214,35,165), circle_thickness); break; //purple
+        case '6' : circle(img, Point2f(re_x, re_y), circle_radius, Scalar(30,17,35), circle_thickness); break; //brown
+        case '7' : rectangle(img, Point2f(re_x-GRID_SIZE/3, re_y-GRID_SIZE/3), Point(re_x+GRID_SIZE/3,re_y+GRID_SIZE/3), Scalar(150,150,255), 3); break;
+        default : putText(img, "?", Point2f(re_x, re_y), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 1, LINE_AA);
+    }
+    imshow("mark", img);
 }

@@ -13,6 +13,8 @@ using namespace std;
 #define GRID_SIZE (108.3/RESIZE_SCALING)
 #define CHESSBOARD_X (535/RESIZE_SCALING)
 #define CHESSBOARD_Y (117/RESIZE_SCALING)
+#define circle_thickness (GRID_SIZE/10)
+#define circle_radius (GRID_SIZE/4.5)
 
 //int mouseInputs;
 
@@ -25,7 +27,7 @@ class OpencvHp {
         void showimg(string windowname, const Mat &img, int x, int y);
         uint_fast8_t knn(uint_fast8_t b, uint_fast8_t g, uint_fast8_t r);
         static void CallBackFunc(int event, int x, int y, int flags, void* userdata);//must be static
-
+        void user_modify_board(int mouse_x, int mouse_y, uint_fast8_t chessboard[8][8], const Mat &img);
 
 };
 
