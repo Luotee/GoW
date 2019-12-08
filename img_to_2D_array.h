@@ -10,10 +10,10 @@ using namespace cv;
 using namespace std;
 
 #define RESIZE_SCALING 2.4
-#define GRID_SIZE (108.3/RESIZE_SCALING)
-#define CHESSBOARD_X (535/RESIZE_SCALING)
-#define CHESSBOARD_Y (117/RESIZE_SCALING)
-#define circle_thickness (GRID_SIZE/10)
+#define GRID_SIZE (108.5/RESIZE_SCALING)
+#define CHESSBOARD_X (533/RESIZE_SCALING)
+#define CHESSBOARD_Y (113/RESIZE_SCALING)
+#define circle_thickness (GRID_SIZE/10.0)
 #define circle_radius (GRID_SIZE/4.5)
 
 //int mouseInputs;

@@ -69,14 +69,14 @@ void OpencvHp::img2array(uint_fast8_t chessboard[8][8])
 
             switch(chessboard[j][i])
             {
-                case '0' : rectangle(img, Point2f(x-GRID_SIZE/3, y-GRID_SIZE/3), Point(x+GRID_SIZE/3,y+GRID_SIZE/3), Scalar(255,255,255), 3); break;
+                case '0' : rectangle(img, Point2f(x-GRID_SIZE/5, y-GRID_SIZE/5), Point(x+GRID_SIZE/5,y+GRID_SIZE/5), Scalar(255,255,255), 3); break;
                 case '1' : circle(img, Point2f(x, y), circle_radius, Scalar(239,207,74), circle_thickness); break; //blue
                 case '2' : circle(img, Point2f(x, y), circle_radius, Scalar(71,192,115), circle_thickness); break; //Green
                 case '3' : circle(img, Point2f(x, y), circle_radius, Scalar(57,77,239), circle_thickness); break; //red
                 case '4' : circle(img, Point2f(x, y), circle_radius, Scalar(123,227,255), circle_thickness); break; //yellow
                 case '5' : circle(img, Point2f(x, y), circle_radius, Scalar(214,35,165), circle_thickness); break; //purple
                 case '6' : circle(img, Point2f(x, y), circle_radius, Scalar(30,17,35), circle_thickness); break; //brown
-                case '7' : rectangle(img, Point2f(x-GRID_SIZE/3, y-GRID_SIZE/3), Point(x+GRID_SIZE/3,y+GRID_SIZE/3), Scalar(150,150,255), 3); break;
+                case '7' : rectangle(img, Point2f(x-GRID_SIZE/5, y-GRID_SIZE/5), Point(x+GRID_SIZE/5,y+GRID_SIZE/5), Scalar(150,150,255), 3); break;
                 default : putText(img, "?", Point2f(x, y), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 1, LINE_AA);
             }
         }
@@ -139,8 +139,8 @@ void OpencvHp::showimg(string windowname, const Mat &img, int x, int y)
 uint_fast8_t OpencvHp::knn(uint_fast8_t b, uint_fast8_t g, uint_fast8_t r)
 {
     //                       頭   藍   綠    紅   黃   紫   棕  爆頭 
-    uint_fast8_t b_arr[8]={ 187, 235,  55,  52, 130, 160,  66, 160};
-    uint_fast8_t g_arr[8]={ 195, 207, 183,  50, 223,  14,  69, 176};
+    uint_fast8_t b_arr[8]={ 187, 239,  55,  52, 130, 160,  66, 160};
+    uint_fast8_t g_arr[8]={ 195, 100, 183,  50, 223,  14,  69, 176};
     uint_fast8_t r_arr[8]={ 202,  74,  78, 217, 251,  78, 107, 225};
     int i;
     uint_fast8_t min_target;
@@ -179,25 +179,30 @@ void OpencvHp::CallBackFunc(int event, int x, int y, int flags, void* userdata)
 
 void OpencvHp::user_modify_board(int mouse_x, int mouse_y, uint_fast8_t chessboard[8][8], const Mat &img)
 {
-    uint_fast8_t board_x, board_y;
-    board_x = (mouse_x-CHESSBOARD_X) / GRID_SIZE;
-    board_y = (mouse_y-CHESSBOARD_Y) / GRID_SIZE;
-    //printf("clickon: %u %u\n",board_x,board_y); //for debug
-    if(chessboard[board_x][board_y]=='7') chessboard[board_x][board_y]='0';
-    else chessboard[board_x][board_y]=chessboard[board_x][board_y]+1;
-    float re_x=GRID_SIZE/2+CHESSBOARD_X+board_x*GRID_SIZE;
-    float re_y=GRID_SIZE/2+CHESSBOARD_Y+board_y*GRID_SIZE;
-    switch(chessboard[board_x][board_y])
+    int board_x, board_y;
+    board_x =  floor( (mouse_x-CHESSBOARD_X) / GRID_SIZE );
+    board_y =  floor( (mouse_y-CHESSBOARD_Y) / GRID_SIZE );
+    //printf("param = %g\n",CHESSBOARD_X);
+    //printf("clickon: %d %d, %d %d\n",board_x,board_y,(mouse_x-(int)CHESSBOARD_X), (mouse_y-(int)CHESSBOARD_Y)); //for debug
+    if(board_x<0||board_x>7||board_y<0||board_y>7) {}
+    else
     {
-        case '0' : rectangle(img, Point2f(re_x-GRID_SIZE/3, re_y-GRID_SIZE/3), Point(re_x+GRID_SIZE/3,re_y+GRID_SIZE/3), Scalar(255,255,255), 3); break;
-        case '1' : circle(img, Point2f(re_x, re_y), circle_radius, Scalar(239,207,74), circle_thickness); break; //blue
-        case '2' : circle(img, Point2f(re_x, re_y), circle_radius, Scalar(71,192,115), circle_thickness); break; //Green
-        case '3' : circle(img, Point2f(re_x, re_y), circle_radius, Scalar(57,77,239), circle_thickness); break; //red
-        case '4' : circle(img, Point2f(re_x, re_y), circle_radius, Scalar(123,227,255), circle_thickness); break; //yellow
-        case '5' : circle(img, Point2f(re_x, re_y), circle_radius, Scalar(214,35,165), circle_thickness); break; //purple
-        case '6' : circle(img, Point2f(re_x, re_y), circle_radius, Scalar(30,17,35), circle_thickness); break; //brown
-        case '7' : rectangle(img, Point2f(re_x-GRID_SIZE/3, re_y-GRID_SIZE/3), Point(re_x+GRID_SIZE/3,re_y+GRID_SIZE/3), Scalar(150,150,255), 3); break;
-        default : putText(img, "?", Point2f(re_x, re_y), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 1, LINE_AA);
+        if(chessboard[board_x][board_y]=='7') chessboard[board_x][board_y]='0';
+        else chessboard[board_x][board_y]=chessboard[board_x][board_y]+1;
+        float re_x=GRID_SIZE/2+CHESSBOARD_X+board_x*GRID_SIZE;
+        float re_y=GRID_SIZE/2+CHESSBOARD_Y+board_y*GRID_SIZE;
+        switch(chessboard[board_x][board_y])
+        {
+            case '0' : rectangle(img, Point2f(re_x-GRID_SIZE/5, re_y-GRID_SIZE/5), Point(re_x+GRID_SIZE/5,re_y+GRID_SIZE/5), Scalar(255,255,255), 3); break;
+            case '1' : circle(img, Point2f(re_x, re_y), circle_radius, Scalar(239,207,74), circle_thickness); break; //blue
+            case '2' : circle(img, Point2f(re_x, re_y), circle_radius, Scalar(71,192,115), circle_thickness); break; //Green
+            case '3' : circle(img, Point2f(re_x, re_y), circle_radius, Scalar(57,77,239), circle_thickness); break; //red
+            case '4' : circle(img, Point2f(re_x, re_y), circle_radius, Scalar(123,227,255), circle_thickness); break; //yellow
+            case '5' : circle(img, Point2f(re_x, re_y), circle_radius, Scalar(214,35,165), circle_thickness); break; //purple
+            case '6' : circle(img, Point2f(re_x, re_y), circle_radius, Scalar(30,17,35), circle_thickness); break; //brown
+            case '7' : rectangle(img, Point2f(re_x-GRID_SIZE/5, re_y-GRID_SIZE/5), Point(re_x+GRID_SIZE/5,re_y+GRID_SIZE/5), Scalar(150,150,255), 3); break;
+            default : putText(img, "?", Point2f(re_x, re_y), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255), 1, LINE_AA);
+        }
+        imshow("mark", img);
     }
-    imshow("mark", img);
 }

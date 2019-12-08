@@ -10,6 +10,7 @@ uint_fast8_t chessboard[8][8];
 
 int main()
 {
+    
     //capture the game screen
     CaptureImg *capture_screen = new CaptureImg();
     capture_screen->capture();
@@ -19,6 +20,7 @@ int main()
     OpencvHp *convert_img_to_array = new OpencvHp();
     convert_img_to_array->img2array(chessboard);
     delete convert_img_to_array;
+    
 
     //DFS or BFS algorithm
     
@@ -41,14 +43,14 @@ int main()
     printf("%8s%8s%8s%8s%8s%8s%8s%8s | %8s\n","head","blue","Green","red","yellow","purple","brown","bomb","combo");
     printf("%8d%8d%8d%8d%8d%8d%8d%8d | %8d\n",best_path->head,best_path->blue,best_path->Green,best_path->red,best_path->yellow,best_path->purple,best_path->brown,best_path->bomb,best_path->combo);
 
-    for(int i=0;i<8;i++)
+    /*for(int i=0;i<8;i++)
     {
         for(int j=0;j<8;j++)
         {
             printf("%c ", board[j][i]);//" %c" : the space means ignore [\n,tab,space]
         }
         putchar(10);
-    }
+    }*/
     //test
     /*printf("=========main function=========\n");
     int i, j;
