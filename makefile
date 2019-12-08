@@ -12,7 +12,7 @@ OPENCV_dll = -l libopencv_calib3d412 -l libopencv_core412 -l libopencv_dnn412 -l
 
 #main file
 all: main.o capture_img.o img_to_2D_array.o search_algorithm.o
-	$(CC) -o $(PROG) $(CFLAGS) main.o capture_img.o img_to_2D_array.o $(WINLIB) -I $(OPENCV_include_path) -L $(OPENCV_dll_path) $(OPENCV_dll)
+	$(CC) -o $(PROG) $(CFLAGS) main.o capture_img.o img_to_2D_array.o search_algorithm.o $(WINLIB) -I $(OPENCV_include_path) -L $(OPENCV_dll_path) $(OPENCV_dll)
 
 mouse: 
 	$(CC) -o mouse mouse.cpp -I $(OPENCV_include_path) -L $(OPENCV_dll_path) $(OPENCV_dll)
