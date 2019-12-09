@@ -5,6 +5,50 @@ void img2array();
 void showimg(string windowname, const Mat &img, int x, int y);
 uint_fast8_t knn(uint_fast8_t b, uint_fast8_t g, uint_fast8_t r);
 */
+void OpencvHp::show_answer(uint_fast8_t x, uint_fast8_t y, int direction)
+{
+    //讀取圖片
+    Mat img = imread(".\\screen.bmp");
+    if ( img.empty() ) 
+    { 
+        cout << "Error loading the image" << endl;
+        exit(0);
+    }
+    //因windows scaling，將圖片縮小
+    resize(img, img, Size(img.cols/RESIZE_SCALING, img.rows/RESIZE_SCALING));
+    namedWindow("Answer", WINDOW_NORMAL);
+    resizeWindow("Answer", img.cols, img.rows);
+	moveWindow("Answer", 0, 0);
+    
+    double x1, y1, x2, y2;
+    x1 = CHESSBOARD_X + x*GRID_SIZE + 0.5*GRID_SIZE;
+    y1 = CHESSBOARD_Y + y*GRID_SIZE + 0.5*GRID_SIZE;
+    if(direction)
+    {
+        x2 = CHESSBOARD_X + x*GRID_SIZE + 0.5*GRID_SIZE;
+        y2 = CHESSBOARD_Y + (y+1)*GRID_SIZE + 0.5*GRID_SIZE;
+    }
+    else
+    {
+        x2 = CHESSBOARD_X + (x+1)*GRID_SIZE + 0.5*GRID_SIZE;
+        y2 = CHESSBOARD_Y + y*GRID_SIZE + 0.5*GRID_SIZE;
+    }
+    
+
+    arrowedLine(img, Point(x1,y1), Point(x2,y2), Scalar(0,0,255), 5, 8, 0,  0.1);
+    imshow("Answer", img);
+
+    Point3_<int> mouseInputs;
+    setMouseCallback("Answer", CallBackFunc, &mouseInputs);
+    //waitKey();
+    while(1)
+    {
+        //if press ESC then break the loop
+        int k = waitKey(1);
+        if(k==27) break;
+        if(mouseInputs.z==EVENT_MOUSEWHEEL) break;
+    }
+}
 
 void OpencvHp::img2array(uint_fast8_t chessboard[8][8])
 {
@@ -19,10 +63,10 @@ void OpencvHp::img2array(uint_fast8_t chessboard[8][8])
 
     //因windows scaling，將圖片縮小
     resize(img, img, Size(img.cols/RESIZE_SCALING, img.rows/RESIZE_SCALING));
-    namedWindow("image", WINDOW_NORMAL);
-    resizeWindow("image", img.cols, img.rows);
-	moveWindow("image", 0, 0);
-    imshow("image", img);
+    //namedWindow("image", WINDOW_NORMAL);
+    //resizeWindow("image", img.cols, img.rows);
+	//moveWindow("image", 0, 0);
+    //imshow("image", img);
 
     //標示棋盤
     line(//top line
@@ -83,6 +127,7 @@ void OpencvHp::img2array(uint_fast8_t chessboard[8][8])
     }
 
     //print the "initial" chessboard
+    printf("===first identify===\n");
     for(i=0;i<8;i++)
     {
         for(j=0;j<8;j++)
@@ -124,8 +169,17 @@ void OpencvHp::img2array(uint_fast8_t chessboard[8][8])
         
         if(mouseInputs.z==EVENT_MOUSEWHEEL) break;
     }
-
-
+    //print the "final" chessboard
+    printf("===user modify===\n");
+    for(i=0;i<8;i++)
+    {
+        for(j=0;j<8;j++)
+        {
+            printf("%c ",chessboard[j][i]);
+        }
+        putchar(10);
+    }
+    destroyAllWindows();
 }
 
 void OpencvHp::showimg(string windowname, const Mat &img, int x, int y)

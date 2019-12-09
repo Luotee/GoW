@@ -62,8 +62,8 @@ void CaptureImg::capture()
     DeleteObject(hBitmap);
 
     //step7 : Minimize it again
-    ShowWindow(hwnd,6);
-
+    ShowWindow(hwnd,9);
+    //SetWindowPos(hwnd,0,);
     //step8 : Remove transparency
     SetWindowLong(hwnd, GWL_EXSTYLE, winLong);
 

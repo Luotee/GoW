@@ -23,7 +23,7 @@ int main()
     
 
     //DFS or BFS algorithm
-    
+    /*
     FILE *file_in;
     file_in = fopen("test.txt","r");
     uint_fast8_t board[8][8], runestone;
@@ -35,33 +35,21 @@ int main()
             board[j][i] = runestone;
         }
     }
-    
+    */
     
     Search *best_path = new Search();
-    best_path->runestone_match(board);
+    best_path->find_best_move(chessboard);
     delete best_path;
-    printf("%8s%8s%8s%8s%8s%8s%8s%8s | %8s\n","head","blue","Green","red","yellow","purple","brown","bomb","combo");
-    printf("%8d%8d%8d%8d%8d%8d%8d%8d | %8d\n",best_path->head,best_path->blue,best_path->Green,best_path->red,best_path->yellow,best_path->purple,best_path->brown,best_path->bomb,best_path->combo);
-
-    /*for(int i=0;i<8;i++)
+    printf("Best move is (%u, %u) go ", best_path->best.x, best_path->best.y);
+    switch(best_path->best.direction)
     {
-        for(int j=0;j<8;j++)
-        {
-            printf("%c ", board[j][i]);//" %c" : the space means ignore [\n,tab,space]
-        }
-        putchar(10);
-    }*/
-    //test
-    /*printf("=========main function=========\n");
-    int i, j;
-    for(i=0;i<8;i++)
-    {
-        for(j=0;j<8;j++)
-        {
-            printf("%c ",chessboard[j][i]);
-        }
-        putchar(10);
-    }*/
-    
-
+        case 0 : printf("right, "); break;
+        case 1 : printf("down, "); break;
+    }
+    printf("score is %d\n", best_path->best.score);
+   
+    //convert the img to array
+    OpencvHp *draw_arrow = new OpencvHp();
+    draw_arrow->show_answer(best_path->best.x, best_path->best.y, best_path->best.direction);
+    delete draw_arrow;
 }

@@ -22,6 +22,7 @@ class OpencvHp {
 
     public:
         void img2array(uint_fast8_t chessboard[8][8]);
+        void show_answer(uint_fast8_t x, uint_fast8_t y, int direction);
 
     private:
         void showimg(string windowname, const Mat &img, int x, int y);

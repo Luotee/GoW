@@ -12,23 +12,24 @@ OPENCV_dll = -l libopencv_calib3d412 -l libopencv_core412 -l libopencv_dnn412 -l
 
 #main file
 all: main.o capture_img.o img_to_2D_array.o search_algorithm.o
-	$(CC) -o $(PROG) $(CFLAGS) main.o capture_img.o img_to_2D_array.o search_algorithm.o $(WINLIB) -I $(OPENCV_include_path) -L $(OPENCV_dll_path) $(OPENCV_dll)
+	@$(CC) -o $(PROG) $(CFLAGS) main.o capture_img.o img_to_2D_array.o search_algorithm.o $(WINLIB) -I $(OPENCV_include_path) -L $(OPENCV_dll_path) $(OPENCV_dll)
+	echo "compile all file"
 
 mouse: 
-	$(CC) -o mouse mouse.cpp -I $(OPENCV_include_path) -L $(OPENCV_dll_path) $(OPENCV_dll)
+	@$(CC) -o mouse mouse.cpp -I $(OPENCV_include_path) -L $(OPENCV_dll_path) $(OPENCV_dll)
 
 #objects
 main.o: main.cpp
-	g++ -c main.cpp -I $(OPENCV_include_path) -L $(OPENCV_dll_path) $(OPENCV_dll)
+	@g++ -c main.cpp -I $(OPENCV_include_path) -L $(OPENCV_dll_path) $(OPENCV_dll)
 
 capture_img.o: capture_img.cpp capture_img.h
-	g++ -c capture_img.cpp
+	@g++ -c capture_img.cpp
 
 img_to_2D_array.o: img_to_2D_array.cpp img_to_2D_array.h
-	g++ -c img_to_2D_array.cpp -I $(OPENCV_include_path) -L $(OPENCV_dll_path) $(OPENCV_dll)
+	@g++ -c img_to_2D_array.cpp -I $(OPENCV_include_path) -L $(OPENCV_dll_path) $(OPENCV_dll)
 
 search_algorithm.o: search_algorithm.cpp search_algorithm.h
-	g++ -c search_algorithm.cpp 
+	@g++ -c search_algorithm.cpp 
 
 clean:
 	del *.exe
