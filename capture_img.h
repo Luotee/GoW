@@ -7,7 +7,7 @@
 #include <iostream>
 
 using namespace std;
-
+#define target_window "gemsofwar" 
 class CaptureImg {
 
     public:

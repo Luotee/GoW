@@ -35,10 +35,20 @@ void CaptureImg::capture()
 
     //step4 : Restore the Window
     RECT m_rCapturedWindow;
-    ShowWindow(hwnd,3);
-    Sleep(100);
-    //SetWindowPos(hwnd, hwnd, 0, 0, 1920, 1080, SWP_NOZORDER | SWP_NOACTIVATE);
+    
     GetWindowRect(hwnd,&m_rCapturedWindow);
+    int orig_x, orig_y, orig_width, orig_height;
+    orig_x = m_rCapturedWindow.left;
+    orig_y = m_rCapturedWindow.top;
+    orig_width = m_rCapturedWindow.right-orig_x;
+    orig_height = m_rCapturedWindow.bottom-orig_y;
+    printf("%d %d %d %d",orig_x,orig_y,orig_width,orig_height);
+    //ShowWindow(hwnd,SW_SHOW);
+    ShowWindow(hwnd,SW_MAXIMIZE);
+    Sleep(100);
+    GetWindowRect(hwnd,&m_rCapturedWindow);
+    //SetWindowPos(hwnd, hwnd, 0, 0, 1920, 1080, SWP_NOZORDER | SWP_NOACTIVATE);
+    
 
     //step5 : Calculate the scope of the selected window
     int nX, nY, nX2, nY2;   // 選定區域坐標
@@ -62,8 +72,9 @@ void CaptureImg::capture()
     DeleteObject(hBitmap);
 
     //step7 : Minimize it again
-    ShowWindow(hwnd,9);
-    //SetWindowPos(hwnd,0,);
+    ShowWindow(hwnd,SW_RESTORE);
+    SetWindowPos(hwnd, hwnd, orig_x, orig_y, orig_width, orig_height, SWP_NOZORDER | SWP_NOACTIVATE);
+        
     //step8 : Remove transparency
     SetWindowLong(hwnd, GWL_EXSTYLE, winLong);
 
