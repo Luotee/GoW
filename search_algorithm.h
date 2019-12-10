@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <cstdio>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -25,11 +27,13 @@ class Search {
             uint_fast8_t y=0;
             uint_fast8_t direction=0;
             int score=0;
+            int enemy_score=0;
         }Process;
 
         uint_fast8_t copy_board[8][8];
         uint_fast8_t temp_board[8][8];
         uint_fast8_t bomb_board[8][8];
+        uint_fast8_t next_board[8][8];
 
         uint_fast8_t combo  =0;
         uint_fast8_t head   =0;
@@ -42,7 +46,8 @@ class Search {
         uint_fast8_t bomb   =0;
 
         int score =0;
-        Process best;
+        Process current_path;
+        vector<Process> all_path;
 
     private:
         void Queue_init(uint_fast8_t x, uint_fast8_t y);
@@ -52,7 +57,7 @@ class Search {
         void swap_runestone(uint_fast8_t *pos1, uint_fast8_t *pos2);
         void drop_board();
         void bomb_area(uint_fast8_t x, uint_fast8_t y);
-
+        static bool compare_score(Process x, Process y);
 };
 
 

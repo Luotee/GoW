@@ -1,11 +1,28 @@
 #include "search_algorithm.h"
 
+bool Search::compare_score(Process x, Process y) 
+{
+    /*if(x.score>=10 || y.score>=10) return (x.score > y.score);
+    else if(x.enemy_score>=10 || y.enemy_score>=10) return (x.enemy_score < y.enemy_score);
+    else if(x.score>=5 || y.score>=5) return (x.score > y.score);
+    else if(x.enemy_score>=5 || y.enemy_score>=5) return (x.enemy_score < y.enemy_score);
+    else return (x.score > y.score);*/  
+
+    if(x.score>=10 && y.score>=10) return (x.enemy_score>y.enemy_score);
+    if(x.score>=10 || y.score>=10) return (x.score > y.score);
+    if(x.score>=5 || y.score>=5) return (x.score > y.score);
+    if(x.score>=5 && y.score>=5) return (x.enemy_score<y.enemy_score);
+    if(x.enemy_score<10 || y.enemy_score<10) return (x.enemy_score<y.enemy_score);
+    if(x.enemy_score<10 && y.enemy_score<10) return (x.score > y.score);
+    else return (x.score > y.score);
+} 
+
 void Search::find_best_move(uint_fast8_t chessboard[8][8])
 {
     int direction_x[2]={ 1, 0};
     int direction_y[2]={ 0, 1};
     uint_fast8_t nx, ny;
-    uint_fast8_t i, j, k;
+    uint_fast8_t i, j, k, i2, j2, k2;
     for(i=0;i<8;i++)
     {
         for(j=0;j<8;j++)
@@ -19,18 +36,41 @@ void Search::find_best_move(uint_fast8_t chessboard[8][8])
                 swap_runestone(&chessboard[j][i], &chessboard[nx][ny]);
                 score = 0;
                 runestone_match(chessboard);
-                //print_board(copy_board);
-                if(score>best.score)
-                {
-                    best.x = j;
-                    best.y = i;
-                    best.direction = k;
-                    best.score = score;
-                }
                 swap_runestone(&chessboard[j][i], &chessboard[nx][ny]);
+                if(score==0) continue;
+                //print_board(copy_board);
+                
+                current_path.x = j;
+                current_path.y = i;
+                current_path.direction = k;
+                current_path.score = score;
+                    
+                memcpy(next_board, copy_board, sizeof(next_board));
+                int worst_score=0;
+                for(i2=0;i2<8;i2++) for(j2=0;j2<8;j2++) for(k2=0;k2<2;k2++)
+                {
+                    nx = j2 + direction_x[k2];
+                    ny = i2 + direction_y[k2];
+                    if(nx>=8 || ny>=8) continue;
+                    swap_runestone(&next_board[j2][i2], &next_board[nx][ny]);
+                    score = 0;
+                    runestone_match(next_board);
+                    swap_runestone(&next_board[j2][i2], &next_board[nx][ny]);
+                    if(score>worst_score)
+                    {
+                        worst_score = score;
+                    }
+                }
+                current_path.enemy_score = worst_score;
+                all_path.push_back(current_path);
             }
         }
     }
+    sort(all_path.begin(), all_path.end(), compare_score);
+    /*for(i=0;i<all_path.size();i++)
+    {
+        printf("(%u, %u), score = %d, go %u\n",all_path[i].x,all_path[i].y,all_path[i].score,all_path[i].direction);
+    }*/
 }
 
 void Search::runestone_match(uint_fast8_t chessboard[8][8])

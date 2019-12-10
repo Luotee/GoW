@@ -74,7 +74,7 @@ void CaptureImg::capture()
     //step7 : Minimize it again
     ShowWindow(hwnd,SW_RESTORE);
     SetWindowPos(hwnd, hwnd, orig_x, orig_y, orig_width, orig_height, SWP_NOZORDER | SWP_NOACTIVATE);
-        
+    if(orig_x<-10 || orig_y<-10) ShowWindow(hwnd,SW_MAXIMIZE);
     //step8 : Remove transparency
     SetWindowLong(hwnd, GWL_EXSTYLE, winLong);
 
