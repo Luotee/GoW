@@ -2,19 +2,15 @@
 
 bool Search::compare_score(Process x, Process y) 
 {
-    /*if(x.score>=10 || y.score>=10) return (x.score > y.score);
-    else if(x.enemy_score>=10 || y.enemy_score>=10) return (x.enemy_score < y.enemy_score);
-    else if(x.score>=5 || y.score>=5) return (x.score > y.score);
-    else if(x.enemy_score>=5 || y.enemy_score>=5) return (x.enemy_score < y.enemy_score);
-    else return (x.score > y.score);*/  
-
-    if(x.score>=10 && y.score>=10) return (x.enemy_score>y.enemy_score);
+    if(x.score>=10 && y.score>=10) return (x.enemy_score > y.enemy_score);
+    if(x.score>=5 && y.score>=5 && x.score==y.score) return (x.enemy_score < y.enemy_score);
+    if(x.enemy_score<10 && y.enemy_score<10 && x.enemy_score==y.enemy_score) return (x.score > y.score);
+    //zone1~4
     if(x.score>=10 || y.score>=10) return (x.score > y.score);
     if(x.score>=5 || y.score>=5) return (x.score > y.score);
-    if(x.score>=5 && y.score>=5) return (x.enemy_score<y.enemy_score);
-    if(x.enemy_score<10 || y.enemy_score<10) return (x.enemy_score<y.enemy_score);
-    if(x.enemy_score<10 && y.enemy_score<10) return (x.score > y.score);
-    else return (x.score > y.score);
+    if(x.enemy_score<10 || y.enemy_score<10) return (x.enemy_score < y.enemy_score);
+    return 0;
+
 } 
 
 void Search::find_best_move(uint_fast8_t chessboard[8][8])
@@ -67,10 +63,6 @@ void Search::find_best_move(uint_fast8_t chessboard[8][8])
         }
     }
     sort(all_path.begin(), all_path.end(), compare_score);
-    /*for(i=0;i<all_path.size();i++)
-    {
-        printf("(%u, %u), score = %d, go %u\n",all_path[i].x,all_path[i].y,all_path[i].score,all_path[i].direction);
-    }*/
 }
 
 void Search::runestone_match(uint_fast8_t chessboard[8][8])
