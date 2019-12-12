@@ -1,32 +1,58 @@
-#include <windows.h>
-#include <cstdio>
-#include <string>
 #include <iostream>
-
+#include <math.h>
+#include <windows.h>
 using namespace std;
-#define target_window "gemsofwar" 
-#define dpi_scaling 1.5
+
+bool crosshairon=false;
+HDC ragedc = NULL;
+int crosshairsize=0;
+int cx=0;
+int cy=0;
+
+void CrossThread(void)
+{
+    while(1)
+    {
+        if(GetAsyncKeyState(VK_NUMPAD0)&1)
+        {
+            crosshairon=!crosshairon;
+            ragedc = GetDC(HWND_DESKTOP);
+            cx=GetSystemMetrics(SM_CXSCREEN)/2-((crosshairsize-1)/2);
+            cy=GetSystemMetrics(SM_CYSCREEN)/2-((crosshairsize-1)/2);
+        }
+        Sleep(1);
+    }
+}
 
 int main()
 {
-    HWND hwnd = FindWindow(0, target_window);
-    if(hwnd==0)
+    cout<<"Crosshair size in pixels:\n";
+    cin>>crosshairsize;
+    if(crosshairsize%2==0)
     {
-      printf("ERROR: please open the game first!\n");
-      exit(0);
+        crosshairsize+=1; 
     }
-    HDC hdc_window=GetWindowDC(hwnd);
-    RECT m_rCapturedWindow;
-    GetWindowRect(hwnd,&m_rCapturedWindow);
-    int nX, nY, nX2, nY2;   // 選定區域坐標
-    int nWidth, nHeight;    // 位圖寬度和高度
-    nX = m_rCapturedWindow.left;
-    nY = m_rCapturedWindow.top;
-    nX2 = m_rCapturedWindow.right*dpi_scaling;
-    nY2 = m_rCapturedWindow.bottom*dpi_scaling;
-    nWidth = nX2 - nX;
-    nHeight = nY2 - nY;
-    printf("(%d, %d), (%d, %d)",nX,nY,nX2,nY2);
-    SetWindowPos(hwnd, hwnd, nX, nY, m_rCapturedWindow.right-m_rCapturedWindow.left, m_rCapturedWindow.bottom-m_rCapturedWindow.top, SWP_NOZORDER | SWP_NOACTIVATE);
-    return 0;
+    system("cls"); 
+    cout<<"Press numpad0 to toggle the crosshair on and off\n";
+    CreateThread(0,0,(LPTHREAD_START_ROUTINE)CrossThread,0,0,0);
+    while(1)
+    {
+        if(crosshairon==true)
+        {
+            for(int i=0;i<crosshairsize;i++)
+            {
+                SetPixel(ragedc, cx+i, cy+((crosshairsize-1)/2), RGB(255,0,0));
+                SetPixel(ragedc, cx+((crosshairsize-1)/2), cy+i, RGB(0,0,255));
+            }
+
+            if(crosshairon==false)
+        
+            for(int i=1;i<crosshairsize;i++)
+            {
+                SetPixel(ragedc, cx+i, cy+((crosshairsize-1)/2), RGB(0,0,0));
+                SetPixel(ragedc, cx+((crosshairsize-1)/2), cy+i, RGB(0,0,0));
+            }
+        }
+        Sleep(33);
+    }
 }

@@ -16,7 +16,9 @@ void OpencvHp::show_answer(uint_fast8_t x, uint_fast8_t y, int direction)
     }
     //因windows scaling，將圖片縮小
     resize(img, img, Size(img.cols/RESIZE_SCALING, img.rows/RESIZE_SCALING));
+    Mat img2(img.rows,img.cols,CV_8UC3);
     namedWindow("Answer", WINDOW_NORMAL);
+    setWindowProperty("Answer",WND_PROP_FULLSCREEN,WINDOW_FULLSCREEN);
     resizeWindow("Answer", img.cols, img.rows);
 	moveWindow("Answer", 0, 0);
     
@@ -33,10 +35,27 @@ void OpencvHp::show_answer(uint_fast8_t x, uint_fast8_t y, int direction)
         x2 = CHESSBOARD_X + (x+1)*GRID_SIZE + 0.5*GRID_SIZE;
         y2 = CHESSBOARD_Y + y*GRID_SIZE + 0.5*GRID_SIZE;
     }
-    
 
-    arrowedLine(img, Point(x1,y1), Point(x2,y2), Scalar(0,0,255), 5, 8, 0,  0.1);
-    imshow("Answer", img);
+    arrowedLine(img2, Point(x1,y1), Point(x2,y2), Scalar(0,0,255), 5, 8, 0,  0.1);
+    imshow("Answer", img2);
+
+
+/*
+    //window setting
+    HWND hwnd = FindWindow(0, "Answer");
+    
+    LONG lStyle = GetWindowLong(hwnd, GWL_STYLE);
+    lStyle &= ~(WS_CAPTION | WS_THICKFRAME | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU);
+    SetWindowLong(hwnd, GWL_STYLE, lStyle);
+    ShowScrollBar(hwnd, SB_VERT, FALSE);
+*/
+    HWND hwnd = FindWindow(0, "Answer");
+    LONG lExStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
+    lExStyle &= ~(WS_EX_DLGMODALFRAME | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE);
+    SetWindowLong(hwnd, GWL_EXSTYLE, lExStyle | WS_EX_LAYERED | WS_EX_TRANSPARENT);
+    
+    SetLayeredWindowAttributes(hwnd, RGB(0,0,0), 0, LWA_COLORKEY);
+
 
     Point3_<int> mouseInputs;
     setMouseCallback("Answer", CallBackFunc, &mouseInputs);

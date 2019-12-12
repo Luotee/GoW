@@ -1,37 +1,19 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include <iostream>
+#include <vector>
+#include <windows.h>
 
 using namespace std;
 using namespace cv;
 
-void CallBackFunc(int event, int x, int y, int flags, void* userdata)
-{
-     if  ( event == EVENT_LBUTTONDOWN )
-     {
-          cout << "Left button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
-     }
-     else if  ( event == EVENT_RBUTTONDOWN )
-     {
-          cout << "Right button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
-     }
-     else if  ( event == EVENT_MBUTTONDOWN )
-     {
-          cout << "Middle button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
-     }
-     else if ( event == EVENT_MOUSEMOVE )
-     {
-          cout << "Mouse move over the window - position (" << x << ", " << y << ")" << endl;
 
-     }
-}
 
 int main(int argc, char** argv)
 {
     // Read image from file 
-    Mat img = imread("screen.bmp");
+    Mat img = imread("cane.png",-1);
     resize(img, img, Size(img.cols/1.5, img.rows/1.5));
-	
 
     //if fail to read the image
     if ( img.empty() ) 
@@ -39,18 +21,43 @@ int main(int argc, char** argv)
         cout << "Error loading the image" << endl;
         return -1; 
     }
+    /*Mat mask;
+    vector<Mat> rgbLayer;
+    split(img,rgbLayer);
+    Mat cs[3] = { rgbLayer[0],rgbLayer[1],rgbLayer[2] };
+    merge(cs,3,img);
+    mask = rgbLayer[3];
+    img.copyTo(img(cv::Rect(0,0,img.cols, img.rows)),mask);*/
 
     //Create a window
-    namedWindow("My Window", WINDOW_NORMAL);
-    resizeWindow("My Window", img.cols/1.5, img.rows/1.5);
-    moveWindow("My Window", 0, 0);
-    //set the callback function for any mouse event
-    setMouseCallback("My Window", CallBackFunc, NULL);
+    namedWindow("Image", WINDOW_NORMAL);
+    resizeWindow("Image", img.cols/1.5, img.rows/1.5);
+    moveWindow("Image", 0, 0);
 
     //show the image
-    imshow("My Window", img);
+    imshow("Image", img);
 
-    // Wait until user press some key
+    //Create a window
+    namedWindow("Image2", WINDOW_NORMAL);
+    resizeWindow("Image2", img.cols/1.5, img.rows/1.5);
+    moveWindow("Image2", 100, 0);
+
+    //show the image
+    imshow("Image2", img);
+
+
+    HWND hwnd = FindWindow(0, "Image");
+    DWORD style = GetWindowLong(hwnd, GWL_STYLE);
+    long winLong = GetWindowLong(hwnd, GWL_EXSTYLE);
+    style &= ~WS_OVERLAPPEDWINDOW;
+    //style |= WS_POPUP;
+    SetWindowLong(hwnd, GWL_STYLE, style);
+    SetWindowLong(hwnd, GWL_EXSTYLE, winLong | WS_EX_LAYERED);
+
+    SetLayeredWindowAttributes(hwnd, RGB(255,255,255), 0, LWA_COLORKEY);
+    //HWND hwnd = FindWindow(0, "Image2");
+    //SetLayeredWindowAttributes(hwnd, 0, (255*50)/100, LWA_ALPHA);
+    printf("channel=%d",img.channels());
     waitKey(0);
 
     return 0;
